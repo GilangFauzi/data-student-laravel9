@@ -26,7 +26,7 @@ class AuthController extends Controller
             return redirect()->intended('/')->with('message', 'Login Success!');
             // return redirect('/')->with('mes', 'Task Created Successfully!');
         }
-        Alert::success('Login Success', 'Toast Type');
+        Alert::warning('Login failed', 'Enter the password and email correctly');
         return redirect('/login')->with('message', 'Login Failed!');
         // return back()->withErrors([
         //     'email' => 'The provided credentials do not match our records.',
@@ -49,9 +49,15 @@ class AuthController extends Controller
     public function register()
     {
         // $role = RoleModel::select('name')->get();
-        $roles = User::with('role')->get();
+        // $roles = User::with('role')->get();
+        $role = RoleModel::all();
+        // foreach ($roles as $r) {
+        //     dd($r->role->name);
+        // }
+        // dd($roles);
         return view('login.register', [
-            'roles' => $roles
+            // 'roles' => $roles,
+            'dataRole' => $role,
         ]);
     }
     public function storeRegistrasi(Request $request)

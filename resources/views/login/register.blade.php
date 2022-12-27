@@ -56,9 +56,9 @@
                                 <label for="exampleInputEmail1" class="form-label">Role</label>
                                 <select class="form-select" aria-label="Default select example" name="role_id">
                                     <option selected>Open this select role</option>
-                                    @foreach ($roles as $role)
-                                        @if ($role->role->name != 'Admin')
-                                            <option value="{{ $role->role_id }}">{{ $role->role->name }}</option>
+                                     @foreach ($dataRole as $role)
+                                        @if ($role->name != 'Admin')
+                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
                                         @endif
                                     @endforeach
                                 </select>

@@ -10,4 +10,9 @@ class RoleModel extends Model
     use HasFactory;
     protected $guarded = ['id'];
     protected $table = 'roles';
+
+    // public function user()
+    // {
+    //     return $this->hasMany(User::class);
+    // }
 }

@@ -28,6 +28,11 @@ class StudentController extends Controller
 {
     public function index(Request $request)
     {
+        // $student = Student::with('class')->get();
+        // foreach ($student as $s) {
+        //     dd($s->class->name);
+        // }
+
         // * pagination with search
         $keyword = $request->keyword;
         // $student = Student::orderBy('id', 'desc')->where('name', 'LIKE', '%' . $keyword . '%')->paginate(6);
