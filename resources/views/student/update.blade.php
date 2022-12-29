@@ -36,9 +36,13 @@
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
                                     data-bs-toggle="dropdown">
-                                    <div class="avatar avatar-online">
-                                        <img src="{{ asset('template/assets/img/avatars/1.png') }}" alt
-                                            class="w-px-40 h-auto rounded-circle" />
+                                   <div class="avatar avatar-online">
+                                       @if(Auth::user()->image)
+                                            <img src="{{ asset('storage/' . Auth::user()->image) }}" alt
+                                                class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @else
+                                      <img src="{{ asset('template/profile default/profileDefault.png') }}" alt  class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @endif
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
@@ -46,10 +50,14 @@
                                         <a class="dropdown-item" href="#">
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0 me-3">
-                                                    <div class="avatar avatar-online">
-                                                        <img src="{{ asset('template/assets/img/avatars/1.png') }}" alt
-                                                            class="w-px-40 h-auto rounded-circle" />
-                                                    </div>
+                                                     <div class="avatar avatar-online">
+                                       @if(Auth::user()->image)
+                                            <img src="{{ asset('storage/' . Auth::user()->image) }}" alt
+                                                class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @else
+                                      <img src="{{ asset('template/profile default/profileDefault.png') }}" alt  class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @endif
+                                    </div>
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     <span class="fw-semibold d-block">{{ Auth::user()->name }}</span>
@@ -62,7 +70,7 @@
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item" href="/profile">
                                             <i class="bx bx-user me-2"></i>
                                             <span class="align-middle">My Profile</span>
                                         </a>
@@ -106,7 +114,7 @@
                         <div class="col">
                             <div class="card">
                                 <div class="card-body">
-                                    <form action="/studentUpdate/{{ $student->id }}" method="post"
+                                    <form action="/studentUpdate/{{ $student->slug }}" method="post"
                                         enctype="multipart/form-data">
                                         @csrf
                                         @method('put')
@@ -128,7 +136,7 @@
                                                     <label for="nim" class="form-label">NIM</label>
                                                     <input type="text"
                                                         class="form-control @error('nim') is-invalid @enderror"id="nim"
-                                                        name="nim" value="{{ $student->nim }}">
+                                                        name="nim" value="{{ $student->nim }}" onkeypress="return /[0-9]/i.test(event.key)">
                                                     @error('nim')
                                                         <div class="text text-danger">{{ $message }}</div>
                                                     @enderror
@@ -193,7 +201,7 @@
                                                 @error('image')
                                                     <div class="text text-danger">{{ $message }}</div>
                                                 @enderror
-                                                <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                                                
                                             </div>
                                             <div class="col">
                                                 <div class="mb-3">
@@ -216,6 +224,8 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <button type="submit" class="btn btn-primary mt-3 me-3">Save changes</button>
+                                           <a href="/students" class="btn btn-outline-secondary mt-3">Back</a>
                                     </form>
                                 </div>
                             </div>

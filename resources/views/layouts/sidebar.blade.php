@@ -58,8 +58,8 @@
 
         <ul class="menu-inner py-1">
             <!-- Dashboard -->
-            <li class="menu-item">
-                <a href="#" class="menu-link">
+            <li class="menu-item {{ $title == 'My Profile' ? 'active' : '' }}">
+                <a href="/profile" class="menu-link">
                     <i class="menu-icon fas fa-id-card"></i>
                     <div data-i18n="My Profile">My Profile</div>
                 </a>

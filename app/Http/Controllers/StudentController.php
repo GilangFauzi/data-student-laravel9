@@ -8,14 +8,15 @@ use Carbon\Carbon;
 use App\Models\Student;
 use App\Models\ClassModel;
 // use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Exports\StudentExport;
-use App\Imports\StudentImport;
 // use PDF;
-use App\Models\Extracurricular;
+use App\Imports\StudentImport;
 // use Barryvdh\DomPDF\PDF;
 // use Barryvdh\DomPDF\Facade as PDF;
 
+use App\Models\Extracurricular;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -183,14 +184,16 @@ class StudentController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function show($slug)
     {
         // kalau cuma pake find, jika data dicari dari url dia bakal error
         // kalau pake findOrFail jika data dicari ga ada dia bakal notfound (recomended)
         // $student = Student::find($id);
         // $student = Student::findOrFail($id);
 
-        $student = Student::with(['class.homeroomTeacher', 'extracurriculars'])->findOrFail($id);
+        // $student = Student::with(['class.homeroomTeacher', 'extracurriculars'])->findOrFail($id);
+        // todo pake prety URL biar cari berdasarkan id di ganti dengan slug
+        $student = Student::with('class.homeroomTeacher', 'extracurriculars')->where('slug', $slug)->first();
         return view('student.showDetailStudent', [
             'student' => $student,
             'title' => 'Students',
@@ -222,6 +225,7 @@ class StudentController extends Controller
         $validate = $request->validate([
             'nim' => 'required|unique:students|max_digits:15|numeric',
             'name' => 'required',
+            // 'slug' => 'alpha_dash',
             'gender' => 'required',
             'class_id' => 'required',
             'image' => 'image|file|max:1024'
@@ -237,6 +241,14 @@ class StudentController extends Controller
         if ($request->gender == 'Choose...') {
             return redirect('/studentCreate')->with('warning', 'Choose Gender');
         }
+
+        // todo menambahkan slug dari name, jadi buat field slug nya dulu di db, baru bisa dipake
+        // * slug dapat di aplikasikan ketika lebih dari 1 kata.
+        // * simbol - bisa diganti jadi _ atau anything
+
+        // $validate['slug'] = Str::slug($validate['name'], '_');
+        // todo kalau pake sluggable, slug manual nya apus aja
+        
         $student = Student::create($validate);
         // Student::create($validate);
 
@@ -257,6 +269,7 @@ class StudentController extends Controller
         // ini buat ngisi relasi table student_extracuricular many_to_many
         // *extracurriculars() di ambil dari relasi atau method yang ada di dalam model student
         // todo extracurricular di request di ambil dari name yang ada di form input array kosong
+        // todo attach digunakan jika mau isi table manyToMany
         $student->extracurriculars()->attach($request->extracurricular);
         Alert::success('Success', 'Success add student');
 
@@ -264,10 +277,11 @@ class StudentController extends Controller
         // todo one line flash message
         return redirect('/students')->with('message', 'Add data student has been success');
     }
-    public function edit(Request $request, $id)
+    public function edit(Request $request, $slug)
     {
         $eskul = Extracurricular::all();
-        $student = Student::with('class')->findOrFail($id);
+        // $student = Student::with('class')->findOrFail($id);
+        $student = Student::with('class')->where('slug', $slug)->first();
 
         // $class = ClassModel::get(['id', 'name']);
         // todo ambil field id, name dan cariin id yang bukan id dari student
@@ -281,9 +295,10 @@ class StudentController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $slug)
     {
-        $student = Student::findOrFail($id);
+        // $student = Student::findOrFail($id);
+        $student = Student::where('slug', $slug)->first();
 
         $validate = [
             // 'nim' => 'required|unique:students|max_digits:15|numeric',
@@ -292,13 +307,13 @@ class StudentController extends Controller
             'class_id' => 'required',
             'image' => 'image|file|max:1024'
         ];
-        // todo jika image kosong atau gak di isi, ini bakal di skip
         if ($request->nim != $student->nim) {
             $validate['nim'] = 'required|unique:students|max_digits:15|numeric';
         }
-
+        
         $validateData = $request->validate($validate);
-
+        
+        // todo jika image kosong atau gak di isi, ini bakal di skip
         if ($request->file('image')) {
             // * jika gambar lama nya ada ketika yang awalnya kosong di upload gambar baru, jika gambar lama nya ada maka dihapus
             if ($request->oldImage) {
@@ -322,24 +337,28 @@ class StudentController extends Controller
         return redirect('/students')->with('message', 'Updated data student has been success');
     }
 
-    public function delete($id)
-    {
+    // public function delete($id)
+    // {
 
-        $student = Student::findOrFail($id);
+    //     $student = Student::findOrFail($id);
 
-        return view('student.delete', [
-            'title' => 'Students',
-            'student' => $student
-        ]);
-    }
+    //     return view('student.delete', [
+    //         'title' => 'Students',
+    //         'student' => $student
+    //     ]);
+    // }
 
-    public function destroy($id)
+    public function destroy($slug)
     {
         // todo penggunaan delete dengan query builder
         // $studentDestory = DB::table('students')->where('id', $id)->delete();
         // todo penggunaan delete dengan eloquent ORM
         // * delete gambar nya
-        $studentDeleted = Student::findOrFail($id);
+        // $studentDeleted = Student::findOrFail($id);
+
+        // todo kalau pake slug gini
+        $studentDeleted = Student::where('slug', $slug)->first();
+
         // if ($studentDeleted->image) {
         //     Storage::delete($studentDeleted->image);
         // }
@@ -361,21 +380,23 @@ class StudentController extends Controller
             'softDelete' => $softDelete
         ]);
     }
-    public function restore($id)
+    public function restore($slug)
     {
-        $restore = Student::withTrashed()->where('id', $id)->restore();
+        $restore = Student::withTrashed()->where('slug', $slug)->restore();
         return redirect('/students')->with('message', 'Data has been restore!');
     }
-    public function forceDelete($id)
+    public function forceDelete($slug)
     {
         // todo buat delete gambar biar ga menuhin
-        $student = Student::with('class')->onlyTrashed()->findOrFail($id);
+        // $student = Student::with('class')->onlyTrashed()->findOrFail($id);
+        $student = Student::with('class')->onlyTrashed()->where('slug', $slug)->first();
         if ($student->image) {
             Storage::delete($student->image);
         }
         // dd($student->image);
         Alert::success('Success', 'Success delete permanent');
-        Student::onlyTrashed()->find($id)->forceDelete();
+        // Student::onlyTrashed()->find($id)->forceDelete();
+        Student::onlyTrashed()->where('slug', $slug)->forceDelete();
         return redirect('/trash')->with('message', 'Data has been delete permanent!');
     }
 
@@ -414,4 +435,17 @@ class StudentController extends Controller
         // Excel::import(new StudentImport, request()->file('file'));
         // return back()->with('message', 'Import Data Success');
     }
+
+    // public function updateSlugAll()
+    // {
+        // ? update semua slug yang datanya masih null
+        // $student = Student::whereNull('slug')->get();
+        // ? upadate semua slug yang null di db secara otomatis
+        // $student = Student::all();
+        // collect($student)->map(function ($item) {
+        //     $item->slug = Str::slug($item->name, '_');
+        //     $item->save();
+        // });
+        // echo "OKE";
+    // }
 }

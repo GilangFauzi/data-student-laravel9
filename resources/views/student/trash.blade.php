@@ -37,8 +37,12 @@
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
                                     data-bs-toggle="dropdown">
                                     <div class="avatar avatar-online">
-                                        <img src="template/assets/img/avatars/1.png" alt
-                                            class="w-px-40 h-auto rounded-circle" />
+                                       @if(Auth::user()->image)
+                                            <img src="{{ asset('storage/' . Auth::user()->image) }}" alt
+                                                class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @else
+                                      <img src="{{ asset('template/profile default/profileDefault.png') }}" alt  class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @endif
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
@@ -46,10 +50,14 @@
                                         <a class="dropdown-item" href="#">
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0 me-3">
-                                                    <div class="avatar avatar-online">
-                                                        <img src="template/assets/img/avatars/1.png" alt
-                                                            class="w-px-40 h-auto rounded-circle" />
-                                                    </div>
+                                                     <div class="avatar avatar-online">
+                                       @if(Auth::user()->image)
+                                            <img src="{{ asset('storage/' . Auth::user()->image) }}" alt
+                                                class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @else
+                                      <img src="{{ asset('template/profile default/profileDefault.png') }}" alt  class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @endif
+                                    </div>
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     <span class="fw-semibold d-block">{{ Auth::user()->name }}</span>
@@ -62,7 +70,7 @@
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item" href="/profile">
                                             <i class="bx bx-user me-2"></i>
                                             <span class="align-middle">My Profile</span>
                                         </a>
@@ -124,11 +132,11 @@
                                                     <td>{{ $soft->class->name }}</td>
                                                     <td>{{ $soft->nim }}</td>
                                                     <td>{{ $soft->gender }}</td>
-                                                    <td> <a href="student/{{ $soft->id }}/restore"
+                                                    <td> <a href="student/{{ $soft->slug }}/restore"
                                                             style="color:rgb(255, 255, 255)"
                                                             class="btn btn-warning border-0"><i
                                                                 class="fas fa-trash-restore"></i></a>
-                                                        <form action="studentForceDelete/{{ $soft->id }}" method="post"
+                                                        <form action="studentForceDelete/{{ $soft->slug }}" method="post"
                                                             class="d-inline">
                                                             @csrf
                                                             @method('delete')
@@ -145,6 +153,7 @@
                                             <p align="center">Trash not found!</p>
                                         @endif
                                     </div>
+                                    <a href="/students" class="btn btn-outline-secondary mt-3 float-end">Back</a>
                                 </div>
                             </div>
                         </div>

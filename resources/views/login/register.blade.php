@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,8 +26,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="" method="POST">
-
+                        <form action="/register" method="POST" enctype="multipart/form-data">
                             @csrf
                             @if (Session::has('message'))
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -35,7 +35,9 @@
                                         aria-label="Close"></button>
                                 </div>
                             @endif
-                            <div class="mb-3">
+                            <div class="row">
+                                <div class="col">
+                                <div class="mb-3">
                                 <label for="exampleInputEmail1" class="form-label">Name</label>
                                 <input type="text" class="form-control" id="exampleInputEmail1" name="name"
                                     required value="{{ old('name') }}">
@@ -43,16 +45,19 @@
                                     <div class="text text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label">Email address</label>
-                                <input type="email" class="form-control" id="exampleInputEmail1" name="email"
-                                    required value="{{ old('email') }}">
-                                @error('email')
-                                    <div class="text text-danger">{{ $message }}</div>
-                                @enderror
+                                </div>
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class="form-label">Email address</label>
+                                    <input type="email" class="form-control" id="exampleInputEmail1" name="email"
+                                        required value="{{ old('email') }}"> 
+                                    @error('email')
+                                        <div class="text text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
-
-                            <div class="mb-3">
+                        </div>
+                        <div class="mb-3">
                                 <label for="exampleInputEmail1" class="form-label">Role</label>
                                 <select class="form-select" aria-label="Default select example" name="role_id">
                                     <option selected>Open this select role</option>
@@ -63,7 +68,15 @@
                                     @endforeach
                                 </select>
                             </div>
-
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Image</label>
+                                <img class="img-preview img-fluid mb-2 col-sm-2">
+                                <input type="file" class="form-control" id="image" name="image" onchange="previewImage()">
+                                @error('image')
+                                    <div class="text text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" class="form-control" id="password" name="password" required>
@@ -81,14 +94,30 @@
                             <button type="submit" class="btn btn-primary bg-gradient">Regist</button>
                             <a href="login" class="btn btn-primary bg-gradient float-end">Back</a>
                         </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    <script>
+        function previewImage() {
+            const image = document.querySelector('#image');
+            const imgPreview = document.querySelector('.img-preview');
 
+            imgPreview.style.display = 'block';
+
+            const oFRaeder = new FileReader();
+            oFRaeder.readAsDataURL(image.files[0]);
+
+            oFRaeder.onload = function(oFREvent) {
+                imgPreview.src = oFREvent.target.result;
+            }
+        }
+    </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
         </script>
+         
 </body>
 
 </html>

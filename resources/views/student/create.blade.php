@@ -37,8 +37,12 @@
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
                                     data-bs-toggle="dropdown">
                                     <div class="avatar avatar-online">
-                                        <img src="template/assets/img/avatars/1.png" alt
-                                            class="w-px-40 h-auto rounded-circle" />
+                                       @if(Auth::user()->image)
+                                            <img src="{{ asset('storage/' . Auth::user()->image) }}" alt
+                                                class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @else
+                                      <img src="{{ asset('template/profile default/profileDefault.png') }}" alt  class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @endif
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
@@ -47,9 +51,13 @@
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0 me-3">
                                                     <div class="avatar avatar-online">
-                                                        <img src="template/assets/img/avatars/1.png" alt
-                                                            class="w-px-40 h-auto rounded-circle" />
-                                                    </div>
+                                       @if(Auth::user()->image)
+                                            <img src="{{ asset('storage/' . Auth::user()->image) }}" alt
+                                                class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @else
+                                      <img src="{{ asset('template/profile default/profileDefault.png') }}" alt  class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @endif
+                                    </div>
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     <span class="fw-semibold d-block">{{ Auth::user()->name }}</span>
@@ -62,7 +70,7 @@
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item" href="/profile">
                                             <i class="bx bx-user me-2"></i>
                                             <span class="align-middle">My Profile</span>
                                         </a>
@@ -115,14 +123,13 @@
                                 <div class="card-body">
                                     <form action="studentCreate" method="post" enctype="multipart/form-data">
                                         @csrf
-
                                         <div class="row">
                                             <div class="col">
                                                 <div class="mb-3">
                                                     <label for="name" class="form-label">Name</label>
                                                     <input type="text"
                                                         class="form-control  @error('name') is-invalid @enderror"
-                                                        id="name" name="name" value="{{ old('name') }}">
+                                                        id="name" name="name" value="{{ old('name') }}" placeholder="Enter full name">
                                                     @error('name')
                                                         <div class="text text-danger">{{ $message }}</div>
                                                     @enderror
@@ -132,8 +139,8 @@
                                                 <div class="mb-3">
                                                     <label for="nim" class="form-label">NIM</label>
                                                     <input type="text"
-                                                        class="form-control @error('nim') is-invalid @enderror"id="nim"
-                                                        name="nim">
+                                                        class="form-control @error('nim') is-invalid @enderror"id="nim" value="{{ old('nim') }}"
+                                                        name="nim" placeholder="Enter nim" onkeypress="return /[0-9]/i.test(event.key)">
                                                     @error('nim')
                                                         <div class="text text-danger">{{ $message }}</div>
                                                     @enderror
@@ -187,7 +194,23 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="mb-3">
+                                        <div class="row">
+                                            <div class="col">
+                                        <label for="image" class="form-label">Image</label>
+                                        <img class="img-preview img-fluid mb-2 col-sm-2">
+                                        <div class="input-group">
+                                            <input type="file"
+                                                class="form-control @error('image') is-invalid @enderror" id="image"
+                                                aria-describedby="inputGroupFileAddon04" aria-label="Upload"
+                                                name="image" onchange="previewImage()">
+                                        </div>
+                                        @error('image')
+                                            <div class="text text-danger">{{ $message }}</div>
+                                        @enderror
+                                        
+                                            </div>
+                                            <div class="col">
+                                            <div class="mb-3">
                                             <label for="extracurricular" class="form-label">Extracurricular</label>
                                             @foreach ($eskul as $eskuls)
                                                 <div class="form-check">
@@ -201,20 +224,11 @@
                                                 </div>
                                             @endforeach
                                         </div>
-
-
-                                        <label for="image" class="form-label">Image</label>
-                                        <img class="img-preview img-fluid mb-2 col-sm-2">
-                                        <div class="input-group">
-                                            <input type="file"
-                                                class="form-control @error('image') is-invalid @enderror" id="image"
-                                                aria-describedby="inputGroupFileAddon04" aria-label="Upload"
-                                                name="image" onchange="previewImage()">
+                                            </div>
                                         </div>
-                                        @error('image')
-                                            <div class="text text-danger">{{ $message }}</div>
-                                        @enderror
-                                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                                     
+                                      <button type="submit" class="btn btn-primary mt-3 me-3">Submit</button>
+                                      <a href="/students" class="btn btn-outline-secondary mt-3">Back</a>
                                     </form>
                                 </div>
 

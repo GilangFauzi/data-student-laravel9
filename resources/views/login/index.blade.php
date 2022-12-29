@@ -68,12 +68,13 @@
                                     </div>
                                 @enderror --}}
                             </div>
-                            <div class="row justify-content-center">
-                                <button type="submit" class="btn btn-primary bg-gradient col-3 ">Login</button>
+                            <div class="row justify-content-center mb-3">
+                                <p class="d-block">Remember me? <input type="checkbox" name="remember_me" id="remember_me"></p>
+                                <button type="submit" class="btn btn-primary bg-gradient">Login</button>
                             </div>
                             {{-- <a href="register" class="btn btn-primary bg-gradient float-end">Register</a> --}}
                         </form>
-                        <small class="d-block text-center mt-3">Not registered? <a href="/register">Register
+                        <small class="d-block text-center">Not registered? <a href="/register">Register
                                 Now!</a></small>
                     </div>
                 </div>

@@ -37,9 +37,13 @@
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
                                     data-bs-toggle="dropdown">
-                                    <div class="avatar avatar-online">
-                                        <img src="template/assets/img/avatars/1.png" alt
-                                            class="w-px-40 h-auto rounded-circle" />
+                                     <div class="avatar avatar-online">
+                                       @if(Auth::user()->image)
+                                            <img src="{{ asset('storage/' . Auth::user()->image) }}" alt
+                                                class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @else
+                                      <img src="{{ asset('template/profile default/profileDefault.png') }}" alt  class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @endif
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
@@ -47,10 +51,14 @@
                                         <a class="dropdown-item" href="#">
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0 me-3">
-                                                    <div class="avatar avatar-online">
-                                                        <img src="template/assets/img/avatars/1.png" alt
-                                                            class="w-px-40 h-auto rounded-circle" />
-                                                    </div>
+                                                     <div class="avatar avatar-online">
+                                       @if(Auth::user()->image)
+                                            <img src="{{ asset('storage/' . Auth::user()->image) }}" alt
+                                                class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @else
+                                      <img src="{{ asset('template/profile default/profileDefault.png') }}" alt  class="w-px-40 h-px-40 rounded-circle img-fluid" />
+                                        @endif
+                                    </div>
                                                 </div>
                                                 <div class="flex-grow-1">
                                                     <span class="fw-semibold d-block">{{ Auth::user()->name }}</span>
@@ -63,7 +71,7 @@
                                         <div class="dropdown-divider"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item" href="/profile">
                                             <i class="bx bx-user me-2"></i>
                                             <span class="align-middle">My Profile</span>
                                         </a>
@@ -215,7 +223,7 @@
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Nama</th>
-                                                    <th>NIM</th>
+                                                    {{-- <th>NIM</th> --}}
                                                     <th>Gender</th>
                                                     <th>Class</th>
                                                     <th>Created At</th>
@@ -231,18 +239,22 @@
                                                     <tr>
                                                         <td><strong>{{ $i++ }}</strong></td>
                                                         <td>{{ $mhs->name }}</td>
-                                                        <td> {{ $mhs->nim }}</td>
+                                                        {{-- <td> {{ $mhs->nim }}</td> --}}
                                                         <td> {{ $mhs->gender }}</td>
                                                         <td>{{ $mhs->class->name }}</td>
                                                         <td>{{ $mhs->created_at->format('D-d-m-Y') }}</td>
                                                         <td>{{ $mhs->updated_at->diffForHumans() }}</td>
                                                         @if (Auth::user()->role_id != 3)
                                                             <td>
-                                                                <a href="/student/{{ $mhs->id }}"
+                                                                {{-- Prety URL --}}
+                                                                <a href="/student/{{ $mhs->slug }}"
                                                                     style="color: green"><i
                                                                         class="fas fa-info-circle"></i></a>
+                                                                {{-- <a href="/student/{{ $mhs->id }}"
+                                                                    style="color: green"><i
+                                                                        class="fas fa-info-circle"></i></a> --}}
                                                                 @if (Auth::user()->role_id == 1)
-                                                                    <form action="/studentDestroy/{{ $mhs->id }}"
+                                                                    <form action="/studentDestroy/{{ $mhs->slug }}"
                                                                         method="post" class="d-inline">
                                                                         @csrf
                                                                         @method('delete')
@@ -255,7 +267,7 @@
                                                                 @endif
                                                                 {{-- <a href="#" style="color: red"><i
                                                                     class="fas fa-trash"></i></a> --}}
-                                                                <a href="/studentEdit/{{ $mhs->id }}"
+                                                                <a href="/studentEdit/{{ $mhs->slug }}"
                                                                     style="color: blue"><i
                                                                         class="fas fa-user-edit"></i></a>
                                                             </td>
@@ -275,6 +287,7 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
                     </div>
 
 

@@ -25,7 +25,15 @@ use App\Http\Controllers\ExtracurricularController;
 //     ]);
 // })->middleware('auth');
 
+// ? for update all slug in field slug
+// Route::get('/slug-update-all', [StudentController::class, 'updateSlugAll']);
+
 Route::get('/', [DashboardController::class, 'index'])->middleware('auth');
+
+Route::get('/profile', [AuthController::class, 'profile'])->middleware('auth');
+Route::put('/profileUpdate/{user}', [AuthController::class, 'profileUpdate'])->middleware('auth');
+Route::put('/changePassword/{user}', [AuthController::class, 'changePassword'])->middleware('auth');
+Route::delete('/destroyAccount/{user}', [AuthController::class, 'destroyAccount'])->middleware('auth');
 
 // * email: admin@gmail.com
 // * pass : password
@@ -44,20 +52,22 @@ Route::post('/register', [AuthController::class, 'storeRegistrasi'])->middleware
 Route::get('/students', [StudentController::class, 'index'])->middleware('auth');
 
 // todo jika bukan admin atau teacher yang login, move in 404
-Route::get('/student/{id}', [StudentController::class, 'show'])->middleware(['auth', 'adminOrTeacher']);
+// ? kalau pake slug, ganti parameter {id} jadi {slug}, sebenernya bisa juga id, cuma biar ga bingung
+Route::get('/student/{slug}', [StudentController::class, 'show'])->middleware(['auth', 'adminOrTeacher']);
 // Route::get('/student/{id}', [StudentController::class, 'show'])->middleware(['auth', 'adminOrTeacher']);
 Route::get('/studentCreate', [StudentController::class, 'create'])->middleware(['auth', 'adminOrTeacher']);
 // Route::get('/studentAdd', [StudentController::class, 'create'])->middleware(['auth', 'adminOrTeacher']);
 Route::post('/studentCreate', [StudentController::class, 'store'])->middleware(['auth', 'adminOrTeacher']);
-Route::get('/studentEdit/{id}', [StudentController::class, 'edit'])->middleware(['auth', 'adminOrTeacher']);
-Route::put('/studentUpdate/{id}', [StudentController::class, 'update'])->middleware(['auth', 'adminOrTeacher']);
+Route::get('/studentEdit/{slug}', [StudentController::class, 'edit'])->middleware(['auth', 'adminOrTeacher']);
+Route::put('/studentUpdate/{slug}', [StudentController::class, 'update'])->middleware(['auth', 'adminOrTeacher']);
 
+// ! kalau pake slug, parameter id ganti jadi slug
 // todo implementasi hak akses admin yang udah di buat middleware dan udah di daftarin di kernel
-Route::get('/studentDelete/{id}', [StudentController::class, 'delete'])->middleware(['auth', 'admin']);
-Route::delete('/studentDestroy/{id}', [StudentController::class, 'destroy'])->middleware(['auth', 'admin']);
+// Route::get('/studentDelete/{id}', [StudentController::class, 'delete'])->middleware(['auth', 'admin']);
+Route::delete('/studentDestroy/{slug}', [StudentController::class, 'destroy'])->middleware(['auth', 'admin']);
 // Route::get('/softDelete', [StudentController::class, 'softDelete'])->middleware(['auth', 'admin']);
 Route::get('/trash', [StudentController::class, 'softDelete'])->middleware(['auth', 'admin']);
-Route::get('/student/{id}/restore', [StudentController::class, 'restore'])->middleware(['auth', 'admin']);
+Route::get('/student/{slug}/restore', [StudentController::class, 'restore'])->middleware(['auth', 'admin']);
 Route::delete('/studentForceDelete/{id}', [StudentController::class, 'forceDelete'])->middleware(['auth', 'admin']);
 // todo EXPORT/IMPORT
 Route::get('/exportPDF', [StudentController::class, 'createPDF'])->middleware(['auth', 'adminOrTeacher']);
