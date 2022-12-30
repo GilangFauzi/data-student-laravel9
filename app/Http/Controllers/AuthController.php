@@ -23,6 +23,7 @@ class AuthController extends Controller
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required',
+            'captcha' => 'required|captcha'
         ]);
 
 
@@ -51,6 +52,10 @@ class AuthController extends Controller
 
         // Alert::warning('Login failed', 'Enter the password and email correctly');
         // return redirect('/login')->with('message', 'Login Failed!');
+    }
+    public function reloadCaptcha()
+    {
+        return response()->json(['captcha' => captcha_img()]);
     }
     public function logout(Request $request)
     {

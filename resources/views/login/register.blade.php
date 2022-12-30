@@ -48,8 +48,8 @@
                                 </div>
                             <div class="col">
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Email address</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1" name="email"
+                                    <label for="email" class="form-label">Email address</label>
+                                    <input type="email" class="form-control" id="email" name="email"
                                         required value="{{ old('email') }}"> 
                                     @error('email')
                                         <div class="text text-danger">{{ $message }}</div>
@@ -58,8 +58,8 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label">Role</label>
-                                <select class="form-select" aria-label="Default select example" name="role_id">
+                                <label for="role" class="form-label">Role</label>
+                                <select class="form-select" aria-label="Default select example" id="role" name="role_id">
                                     <option selected>Open this select role</option>
                                      @foreach ($dataRole as $role)
                                         @if ($role->name != 'Admin')

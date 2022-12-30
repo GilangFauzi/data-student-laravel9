@@ -43,6 +43,8 @@ Route::delete('/destroyAccount/{user}', [AuthController::class, 'destroyAccount'
 Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'authenticate'])->middleware('guest');
 Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::get('/reload-captcha', [AuthController::class, 'reloadCaptcha'])->middleware('guest');
+
 
 Route::get('/register', [AuthController::class, 'register'])->middleware('guest');
 Route::post('/register', [AuthController::class, 'storeRegistrasi'])->middleware('guest');
