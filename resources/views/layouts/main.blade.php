@@ -45,6 +45,9 @@
     <script src="{{ asset('template/assets/js/config.js') }}"></script>
     {{-- <script src="https://use.fontawesome.com/ede8aac208.js"></script> --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+
+      <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css">
+  <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
 </head>
 
 <body>
@@ -54,8 +57,6 @@
     {{-- /sidebar --}}
     @include('sweetalert::alert')
     @yield('content')
-
-
 
 
     <script src="{{ asset('template/assets/vendor/libs/jquery/jquery.js') }}"></script>

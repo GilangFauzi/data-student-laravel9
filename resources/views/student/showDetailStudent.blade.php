@@ -128,6 +128,7 @@
                                                 <thead>
                                                     <tr class="text-nowrap">
                                                         <th>Name</th>
+                                                        <th>Email</th>
                                                         <th>NIM</th>
                                                         <th>Gender</th>
                                                         <th>Class</th>
@@ -137,6 +138,7 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>{{ $student->name }}</td>
+                                                        <td>{{ $student->email }}</td>
                                                         <td>{{ $student->nim }}</td>
                                                         <td>{{ $student['gender'] }}</td>
                                                         <td>{{ $student->class->name }}</td>

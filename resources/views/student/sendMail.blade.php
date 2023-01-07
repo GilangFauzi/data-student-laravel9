@@ -21,7 +21,7 @@
                         <!-- Search -->
                         <div class="navbar-nav align-items-center">
                             <div class="nav-item d-flex align-items-center mt-3">
-                                <h5>Form Update Data Student</h5>
+                                <h5>Form Send Mail</h5>
                             </div>
                         </div>
                         <!-- /Search -->
@@ -114,16 +114,15 @@
                         <div class="col">
                             <div class="card">
                                 <div class="card-body">
-                                    <form action="/studentUpdate/{{ $student->slug }}" method="post"
+                                    <form action="/sendMail/{{ $student->slug }}" method="post"
                                         enctype="multipart/form-data">
                                         @csrf
-                                        @method('put')
-                                        <input type="hidden" name="oldImage" value="{{ $student->image }}">
+                                        <input type="hidden" name="senderName" value="{{ Auth::user()->email }}">
                                         <div class="row">
                                             <div class="col">
                                                 <div class="mb-3">
                                                     <label for="name" class="form-label">Name</label>
-                                                    <input type="text"
+                                                    <input type="text" readonly
                                                         class="form-control  @error('name') is-invalid @enderror"
                                                         id="name" name="name" value="{{ $student->name }}">
                                                     @error('name')
@@ -133,8 +132,8 @@
                                             </div>
                                             <div class="col">
                                                 <div class="mb-3">
-                                                    <label for="email" class="form-label">Email</label>
-                                                    <input type="email"
+                                                    <label for="email" class="form-label">Send to :</label>
+                                                    <input type="email" readonly
                                                         class="form-control  @error('email') is-invalid @enderror"
                                                         id="email" name="email" value="{{ $student->email }}">
                                                     @error('email')
@@ -142,100 +141,36 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col">
-                                                <div class="mb-3">
-                                                    <label for="nim" class="form-label">NIM</label>
-                                                    <input type="text"
-                                                        class="form-control @error('nim') is-invalid @enderror"id="nim"
-                                                        name="nim" value="{{ $student->nim }}" onkeypress="return /[0-9]/i.test(event.key)">
-                                                    @error('nim')
-                                                        <div class="text text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="mb-3">
-                                                    <label for="class_id" class="form-label">Class ID</label>
-                                                    <div class="input-group">
-                                                        <label class="input-group-text " for="class_id">Options</label>
-                                                        <select class="form-select" id="class_id" name="class_id">
-                                                            <option value="{{ $student->class->id }}" selected>
-                                                                {{ $student->class->name }}</option>
-                                                            @foreach ($class as $class_id)
-                                                                <option value="{{ $class_id->id }}">
-                                                                    {{ $class_id->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <div class="mb-3">
-                                                    <label for="gender" class="form-label">Gender</label>
-                                                    <div class="input-group">
-                                                        <label class="input-group-text " for="gender">Options</label>
-                                                        <select class="form-select" id="gender" name="gender">
-                                                            <option selected>{{ $student->gender }}</option>
-                                                            @if ($student->gender == 'Pria')
-                                                                <option value="Wanita" selected>
-                                                                    Wanita
-                                                                </option>
-                                                            @else
-                                                                <option value="Pria">
-                                                                    Pria
-                                                                </option>
-                                                            @endif
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col">
-                                                <label for="image" class="form-label">Image</label>
-                                                @if ($student->image)
-                                                    <img src="{{ asset('storage/' . $student->image) }}" alt=""
-                                                        class="img-preview img-fluid mb-2 col-sm-2 d-block">
-                                                @else
-                                                    <img class="img-preview img-fluid mb-2 col-sm-2">
-                                                @endif
-                                                <div class="input-group">
-                                                    <input type="file"
-                                                        class="form-control @error('image') is-invalid @enderror"
-                                                        id="image" aria-describedby="inputGroupFileAddon04"
-                                                        aria-label="Upload" name="image" onchange="previewImage()">
-                                                </div>
-                                                @error('image')
+                                            <div class="mb-3">
+                                                <label for="nim" class="form-label">Subject</label>
+                                                <input type="text"
+                                                    class="form-control @error('subject') is-invalid @enderror"id="subject"
+                                                    name="subject" value="{{ old('subject') }}" >
+                                                @error('subject')
                                                     <div class="text text-danger">{{ $message }}</div>
                                                 @enderror
-                                                
-                                            </div>
-                                            <div class="col">
-                                                <div class="mb-3">
-                                                    <label for="extracurricular"
-                                                        class="form-label">Extracurricular</label>
-                                                    @foreach ($eskul as $eskuls)
-                                                        <div class="form-check">
-                                                            {{-- todo name disini pakein array kosong buat nampung --}}
-                                                            <input class="form-check-input" type="checkbox"
-                                                                value="{{ $eskuls->id }}" name="extracurricular[]"
-                                                                id="flexCheckDefault" {{-- extracurriculars di ambil dari model student yang method relasi --}}
-                                                                @foreach ($student->extracurriculars as $value)
-                                                                @if ($eskuls->id == $value->id)
-                                                                checked @endif @endforeach>
-                                                            <label class="form-check-label" for="flexCheckDefault">
-                                                                {{ $eskuls->name }}
-                                                            </label>
-                                                        </div>
-                                                    @endforeach
-                                                </div>
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary mt-3 me-3">Save changes</button>
+                                        <div class="row">
+                                            <div class="mb-3">
+                                                <label for="message" class="form-label">Message</label>
+                                                @error('message')
+                                                <div class="text text-danger">{{ $message }}</div>
+                                                @enderror
+                                                <input id="x" type="hidden" name="message" value="{{ old('message') }}">
+                                                 <trix-editor input="x"></trix-editor>
+                                                {{-- <input type="text"
+                                                    class="form-control @error('message') is-invalid @enderror"id="message"
+                                                    name="message" value="{{ old('message') }}" >
+                                                @error('message')
+                                                    <div class="text text-danger">{{ $message }}</div>
+                                                @enderror --}}
+                                            </div>
+                                        </div>
+                                     
+                                        <button type="submit" class="btn btn-primary mt-3 me-3">Send Email</button>
                                            <a href="/students" class="btn btn-outline-secondary mt-3">Back</a>
                                     </form>
                                 </div>

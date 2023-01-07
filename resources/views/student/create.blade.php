@@ -137,6 +137,17 @@
                                             </div>
                                             <div class="col">
                                                 <div class="mb-3">
+                                                    <label for="email" class="form-label">email</label>
+                                                    <input type="email"
+                                                        class="form-control  @error('email') is-invalid @enderror"
+                                                        id="email" name="email" value="{{ old('email') }}" placeholder="Enter full email">
+                                                    @error('email')
+                                                        <div class="text text-danger">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="mb-3">
                                                     <label for="nim" class="form-label">NIM</label>
                                                     <input type="text"
                                                         class="form-control @error('nim') is-invalid @enderror"id="nim" value="{{ old('nim') }}"

@@ -5,25 +5,28 @@ namespace App\Http\Controllers;
 // use alert;
 
 use Carbon\Carbon;
+use App\Mail\sendMail;
 use App\Models\Student;
-use App\Models\ClassModel;
 // use Illuminate\Support\Carbon;
+use App\Models\ClassModel;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Exports\StudentExport;
 // use PDF;
-use App\Imports\StudentImport;
+use App\Exports\StudentExport;
 // use Barryvdh\DomPDF\PDF;
 // use Barryvdh\DomPDF\Facade as PDF;
 
+use App\Imports\StudentImport;
 use App\Models\Extracurricular;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Http\Requests\StoreStudentRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
@@ -218,13 +221,13 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
-
         // dd($request);
         // todo custom validation
         // * open terminal typing php artisan make:request StoreStudentRequest
         $validate = $request->validate([
             'nim' => 'required|unique:students|max_digits:15|numeric',
             'name' => 'required',
+            'email' => 'required|email:dns|unique:students',
             // 'slug' => 'alpha_dash',
             'gender' => 'required',
             'class_id' => 'required',
@@ -303,12 +306,17 @@ class StudentController extends Controller
         $validate = [
             // 'nim' => 'required|unique:students|max_digits:15|numeric',
             'name' => 'required',
+            // 'email' => 'required|email',
+            // 'email' => 'required|email:dns|unique:students',
             'gender' => 'required',
             'class_id' => 'required',
             'image' => 'image|file|max:1024'
         ];
         if ($request->nim != $student->nim) {
             $validate['nim'] = 'required|unique:students|max_digits:15|numeric';
+        }
+        if ($request->email != $student->email) {
+            $validate['email'] = 'required|email:dns|unique:students';
         }
         
         $validateData = $request->validate($validate);
@@ -438,14 +446,83 @@ class StudentController extends Controller
 
     // public function updateSlugAll()
     // {
-        // ? update semua slug yang datanya masih null
-        // $student = Student::whereNull('slug')->get();
-        // ? upadate semua slug yang null di db secara otomatis
-        // $student = Student::all();
-        // collect($student)->map(function ($item) {
-        //     $item->slug = Str::slug($item->name, '_');
-        //     $item->save();
-        // });
-        // echo "OKE";
+    // ? update semua slug yang datanya masih null
+    // $student = Student::whereNull('slug')->get();
+    // ? upadate semua slug yang null di db secara otomatis
+    // $student = Student::all();
+    // collect($student)->map(function ($item) {
+    //     $item->slug = Str::slug($item->name, '_');
+    //     $item->save();
+    // });
+    // echo "OKE";
     // }
+    // todo STUDENT MAIL
+    public function studentMail($slug)
+    {
+        $student = Student::with('class.homeroomTeacher', 'extracurriculars')->where('slug', $slug)->first();
+        return view('student.sendMail', [
+            'student' => $student,
+            'title' => 'Students',
+            // 'name' => 'Gilang Fauzi',
+        ]);
+    }
+    // TODO SEND MAIL
+    public function sendMail(Request $request, $slug)
+    {
+        $student = Student::where('slug', $slug)->first();
+
+        $request->validate([
+            'subject' => 'required',
+            // 'sender_name' => 'gilangfauzi648@gmail.com',
+            'message' => 'max:1200'
+        ]);
+
+        $data_email = [
+            'subject' =>  $request->subject,
+            'message' => $request->message,
+            'senderName' => $request->senderName,
+            // 'senderNamer' => 'no-reply@gmail.com'
+        ];
+
+        // dd($data_email);
+
+        Mail::to($request->email)->send(new sendMail($data_email));
+        return redirect('/students')->with('message', 'Send mail has been success');
+    }
+    // todo Student Mail All
+    public function studentMailAll()
+    {
+        // $student = Student::select('email')->get();
+        return view('student/sendMailAll', [
+            'title' => 'Students',
+            // 'student' => $student
+        ]);
+    }
+    // TODO SEND MAIL
+    public function sendMailAll(Request $request)
+    {
+        $student = Student::select('email')->get();
+        $pluck = collect($student)->pluck('email')->all();
+        $request->validate([
+            'subject' => 'required',
+            // 'sender_name' => 'gilangfauzi648@gmail.com',
+            'message' => 'max:1200',
+            'confirmation' => 'required'
+        ]);
+
+        $data_email = [
+            'subject' =>  $request->subject,
+            'message' => $request->message,
+            'senderName' => $request->senderName,
+            // 'senderNamer' => 'no-reply@gmail.com'
+        ];
+
+        // dd($data_email);
+
+        foreach ($pluck as $email) {
+            Mail::to($email)->send(new sendMail($data_email));
+        }
+
+        return redirect('/students')->with('message', 'Send mail has been success');
+    }
 }

@@ -76,6 +76,23 @@ Route::get('/exportPDF', [StudentController::class, 'createPDF'])->middleware(['
 Route::get('/exportExcel', [StudentController::class, 'export'])->middleware(['auth', 'adminOrTeacher']);
 Route::post('/importExcel', [StudentController::class, 'import'])->middleware(['auth', 'adminOrTeacher']);
 // Route::post('users-import', 'import')->name('users.import');
+
+// todo STUDENT MAIL
+Route::get('/studentMail/{slug}', [StudentController::class, 'studentMail'])->middleware([
+    'auth', 'adminOrTeacher'
+]);
+Route::post('/sendMail/{slug}', [StudentController::class, 'sendMail'])->middleware([
+    'auth', 'adminOrTeacher'
+]);
+
+// todo SEND MAIL ALL STUDENT
+Route::get('/studentMailAll', [StudentController::class, 'studentMailAll'])->middleware([
+    'auth', 'admin'
+]);
+Route::post('/sendMailAll', [StudentController::class, 'sendMailAll'])->middleware([
+    'auth', 'admin'
+]);
+
 // todo CLASS
 Route::get('/class', [ClassController::class, 'index'])->middleware('auth');
 Route::get('/classDetail/{id}', [ClassController::class, 'show'])->middleware('auth');

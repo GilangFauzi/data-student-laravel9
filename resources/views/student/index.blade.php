@@ -100,11 +100,11 @@
                 <div class="content-wrapper">
                     <!-- Content -->
                     <div class="container-xxl flex-grow-1 container-p-y ">
-
+                       
                         <form action="" method="get">
                             @csrf
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-md-5">
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" placeholder="Keyword for search..."
                                             aria-label="Search..." aria-describedby="button-addon2" name="keyword">
@@ -113,21 +113,17 @@
                                     </div>
                                 </div>
                         </form>
-                        <div class="row">
-
-                        </div>
-
-
+                  
                         <!-- Basic Layout & Basic with Icons -->
                         {{-- * Alert --}}
-                        <div class="row-xxl">
-                            @if (Auth::user()->role_id == 3)
+                      {{-- !! start ngasal --}}
+                       @if (Auth::user()->role_id == 3)
                             @else
                                 <div class="d-flex bd-highlight mb-3">
                                     <div class="p-2 bd-highlight">
                                         <a href="exportPDF" class="btn btn-danger p-2 ">Export PDF
                                             <i class="fas fa-file-pdf"></i></a>
-                                    </div>
+                                        </div>
                                     <div class="p-2 bd-highlight">
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-success dropdown-toggle p-2"
@@ -146,6 +142,13 @@
                                             </ul>
                                         </div>
                                     </div>
+                                    @if(Auth::user()->role_id === 1)
+                                    <div class="p-2 bd-highlight">
+                                        <a href="studentMailAll/" class="btn btn-info p-2 ">Mail
+                                         <i class="fas fa-mail-bulk"></i></a>
+                                    </div>
+                                    @endif
+                                    
                                     <!-- Modal -->
                                     <div class="modal fade" id="exampleModal" tabindex="-1"
                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -181,6 +184,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
                                     <div class="ms-auto p-2 bd-highlight">
                                         <a href="/studentCreate"class="btn btn-primary p-2">
                                             Add Student <i class="fas fa-user-plus"></i>
@@ -188,8 +192,8 @@
                                     </div>
                                 </div>
                             @endif
-
-
+                     
+{{-- !! end ngasal dulu ya --}}
                             @if (Session::has('message'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                                     <strong>Congrats!</strong> {{ session('message') }}
@@ -270,6 +274,8 @@
                                                                 <a href="/studentEdit/{{ $mhs->slug }}"
                                                                     style="color: blue"><i
                                                                         class="fas fa-user-edit"></i></a>
+                                                                <a href="/studentMail/{{ $mhs->slug }}"
+                                                                    style="color: rgb(255, 174, 0)"><i class="fas fa-solid fa-paper-plane"></i></a>
                                                             </td>
                                                         @endif
                                                     </tr>
@@ -289,7 +295,6 @@
                         </div>
                     </div>
                     </div>
-
 
                     <!-- / Content -->
 
