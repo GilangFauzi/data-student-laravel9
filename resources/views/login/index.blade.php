@@ -38,6 +38,12 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
+                @if (Session::has('verification'))
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <strong>Warning!</strong> {{ session('verification') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

@@ -7,6 +7,7 @@ use App\Models\RoleModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -104,10 +105,16 @@ class AuthController extends Controller
         }
 
         $validasi['password'] = bcrypt($validasi['password']);
-        User::create($validasi);
+        // User::create($validasi);
+        $user = User::create($validasi);
 
-        return redirect('login')->with('register', 'Register has been success');
+        // return redirect('login')->with('register', 'Register has been success');
+        // todo verification email
+        event(new Registered($user));
+        auth()->login($user);
+        return redirect()->route('verification.notice')->with('message', 'Registration has been success, please verification email');
     }
+
     public function profile()
     {
         return view('login.profile', [
